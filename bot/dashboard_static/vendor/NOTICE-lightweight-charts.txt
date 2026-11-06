@@ -1,0 +1,10 @@
+TradingView Lightweight Charts™
+Copyright (с) 2025 TradingView, Inc. https://www.tradingview.com/
+
+Vendored file: lightweight-charts.standalone.production.js, v5.2.1 (npm package "lightweight-charts", unmodified).
+sha256 e21cc5caa0226ef30bd8549c50b9ef926615f2a4ee6b4e486353477a55f598cf
+Licensed under the Apache License, Version 2.0 (see LICENSE-lightweight-charts.txt).
+This software incorporates several parts of tslib (https://github.com/Microsoft/tslib, (c) Microsoft Corporation),
+covered by the BSD Zero Clause License.
+The dashboard shows this attribution and a link to https://www.tradingview.com/ in its footer, and keeps the
+chart's attributionLogo option enabled, as the license requires.

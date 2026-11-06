@@ -1,0 +1,135 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #060709;
+  --panel: #0c0e14;
+  --card: #11141d;
+  --line: #1e2330;
+  --tx: #e5e7eb;
+  --mut: #8b93a7;
+  --acc: #6366f1;
+  --acc2: #4f46e5;
+  --cy: #06b6d4;
+  --bid: #00e676;
+  --ask: #ff3b69;
+  --gold: #f59e0b;
+  --vault: #10b981;
+  --rust: #9a3412;
+  --rust-hot: #c2410c;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-panel: var(--panel);
+  --color-card: var(--card);
+  --color-line: var(--line);
+  --color-tx: var(--tx);
+  --color-mut: var(--mut);
+  --color-acc: var(--acc);
+  --color-acc2: var(--acc2);
+  --color-cy: var(--cy);
+  --color-bid: var(--bid);
+  --color-ask: var(--ask);
+  --color-gold: var(--gold);
+  --color-vault: var(--vault);
+  --font-sans: var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), "JetBrains Mono", ui-monospace, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  min-height: 100%;
+  background-color: var(--bg);
+  color: var(--tx);
+  font-family: var(--font-sans);
+  background-image:
+    linear-gradient(to right, rgba(99, 102, 241, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(99, 102, 241, 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-attachment: fixed;
+}
+
+::selection {
+  background: rgba(99, 102, 241, 0.45);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--cy);
+  outline-offset: 3px;
+}
+
+.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.cardx {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.cardx::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #6366f1, #06b6d4);
+}
+
+.banner-sim {
+  background: linear-gradient(90deg, #7c2d12 0%, #c2410c 45%, #9a3412 100%);
+  color: #fff7ed;
+}
+
+.prose-desk p {
+  color: var(--tx);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+}
+
+.prose-desk h2 {
+  margin-top: 2.5rem;
+  font-size: 1.55rem;
+  letter-spacing: -0.03em;
+  font-weight: 560;
+}
+
+.prose-desk h3 {
+  margin-top: 1.75rem;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+}
+
+.prose-desk ul,
+.prose-desk ol {
+  margin-top: 0.9rem;
+  display: grid;
+  gap: 0.55rem;
+  padding-left: 1.2rem;
+  color: var(--tx);
+  line-height: 1.65;
+}
+
+.prose-desk a {
+  color: var(--cy);
+  text-underline-offset: 3px;
+}
+
+.prose-desk a:hover {
+  color: white;
+}

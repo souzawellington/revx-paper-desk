@@ -1,0 +1,4 @@
+{
+  "rewrites": [{ "source": "/((?!api/main).*)", "destination": "/api/main?r=/$1" }],
+  "functions": { "api/main.mjs": { "maxDuration": 15 } }
+}

@@ -1,0 +1,4 @@
+ccxt==4.5.88   # opcional: só dados públicos (desk/ccxt_data.py); nunca execução
+yfinance==1.7.0   # opcional (Apache-2.0): dados macro diários gratuitos (desk/macro.py); sem ele o macro fica INSUFFICIENT_DATA
+# openbb==5.0.0   # opcional (Apache-2.0), PESADO: instalar num venv à parte; `python -m desk.macro fetch --provider openbb` (cboe + federal_reserve, sem chave)
+# riskfolio-lib==7.4.0 / financetoolkit==2.2.3  # só para verificação (tools/riskfolio_crosscheck.py, tools/ftk_crosscheck.py) num venv à parte; o desk usa re-implementações em Python puro

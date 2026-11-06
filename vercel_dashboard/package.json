@@ -1,0 +1,7 @@
+{
+  "name": "revx-paper-dashboard",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node --test test/" },
+  "dependencies": { "@vercel/blob": "2.8.2" }
+}

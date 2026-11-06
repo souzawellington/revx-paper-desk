@@ -1,0 +1,44 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0b0f17">
+<title>Bots SIMULADOS · ao vivo</title>
+<script src="/vendor/lightweight-charts.standalone.production.js"></script><!-- TradingView Lightweight Charts v5.2.1, Apache-2.0, vendorizado -->
+<style>
+:root{--bg:#0b0f17;--card:#141a26;--line:#232c3d;--tx:#e6ebf5;--mut:#8a96ad;--g:#22c55e;--r:#ff5470;--y:#f5b942;--b:#4ea1ff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding-bottom:env(safe-area-inset-bottom)}
+.banner{position:sticky;top:0;z-index:5;background:#7a1c2b;color:#fff;text-align:center;font-weight:800;letter-spacing:.5px;padding:8px 10px;font-size:14px}
+.banner small{display:block;font-weight:500;opacity:.9;letter-spacing:0}
+header{padding:12px 14px 4px}h1{font-size:19px;margin:0}.mut{color:var(--mut);font-size:12.5px}
+main{padding:8px 10px;display:grid;gap:10px;grid-template-columns:minmax(0,1fr);max-width:1300px;margin:0 auto}
+@media(min-width:760px){main{grid-template-columns:repeat(2,minmax(0,1fr))}.wide{grid-column:1/-1}}
+@media(min-width:1200px){main{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.card{min-width:0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
+.card h2{font-size:15px;margin:0 0 6px}.row{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.big{font-size:26px;font-weight:800}.pos{color:var(--g)}.neg{color:var(--r)}.warn{color:var(--y)}
+.pill{display:inline-block;border-radius:999px;padding:1px 8px;font-size:11.5px;font-weight:700;background:#1f2a3d;color:var(--mut)}
+.pill.ok{background:#11351f;color:var(--g)}.pill.bad{background:#3d1520;color:var(--r)}.pill.wait{background:#3a2f12;color:var(--y)}
+.bar{height:7px;background:#0e1420;border-radius:9px;overflow:hidden;margin:4px 0 2px}.bar i{display:block;height:100%;background:var(--b)}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;font-size:13px;margin:6px 0}.kv b{font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:12.5px}td,th{padding:4px 3px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+td:first-child,th:first-child{text-align:left}th{color:var(--mut);font-weight:600}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+details{margin-top:6px}summary{cursor:pointer;color:var(--b);font-size:13px;padding:4px 0}
+#chart{height:280px}.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;margin-top:6px}.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.prices{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px}
+footer{color:var(--mut);font-size:11.5px;text-align:center;padding:16px}footer a{color:var(--mut)}
+.err{background:#3a2f12;color:var(--y);border-radius:10px;padding:6px 10px;font-size:13px;margin:6px 10px 0}
+</style></head><body>
+<div class="banner">SIMULADO — nenhuma ordem real<small>Dinheiro fictício · só leitura · modo real DESLIGADO</small></div>
+<header><h1>Bots simulados ao vivo</h1>
+<div class="mut">Atualizado <span id="upd">…</span> (horário de Londres) · atualiza a cada 30 s · <span id="mode"></span></div></header>
+<div id="errs"></div>
+<main>
+<section class="card wide"><div class="row"><h2>Preços ao vivo · Revolut X</h2><span class="mut" id="pxinfo"></span></div><div class="prices" id="prices"></div></section>
+<section class="card wide"><h2>Curva de equity (início $65)</h2><div id="chart"></div><div class="legend" id="legend"></div></section>
+<div id="bots" style="display:contents"></div>
+<section class="card wide" id="desk"></section>
+</main>
+<footer>Painel só-leitura: não existe nenhum botão que mude o bot. Teto, kill e retomada só pelo terminal, com decisão sua.<br>
+Gráficos: <a href="https://www.tradingview.com/" target="_blank" rel="noopener">TradingView Lightweight Charts™</a> · Apache-2.0
+(<a href="/vendor/NOTICE-lightweight-charts.txt">NOTICE</a>) · <a href="/classic">painel clássico</a></footer>
+<script src="/live.js"></script></body></html>

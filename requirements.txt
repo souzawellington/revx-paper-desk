@@ -1,0 +1,5 @@
+requests>=2.31
+jsonschema>=4.0
+cryptography>=42
+pytest>=7.0
+matplotlib>=3.8   # gráficos dos alertas do desk

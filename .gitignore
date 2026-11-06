@@ -1,0 +1,33 @@
+# Secrets and local credentials. Names in docs are fine; these files are not.
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+.dashboard_password
+.vercel_dashboard_password
+.vercel_ingest_token
+*password*
+*ingest_token*
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+
+# Node / Next
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+.vercel
+
+# Live paper state, caches, and logs (never publish a running book's files)
+data/
+data_ext/
+logs/
+desk/state/

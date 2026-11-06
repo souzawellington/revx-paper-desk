@@ -1,0 +1,55 @@
+<!doctype html><html lang="pt"><head><meta charset="utf-8"><title>Grok_Quant_Alpha · Revolut X (só leitura)</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<script src="/vendor/lightweight-charts.standalone.production.js"></script><!-- TradingView Lightweight Charts v5.2.1, Apache-2.0, vendorizado -->
+<style>
+:root{--bg:#0b0d12;--card:#151821;--line:#232838;--fg:#e8eaf0;--mut:#8a90a2;--acc:#7c5cff;--g:#21c37a;--r:#ff5470;--y:#f5b942}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.4 Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{display:flex;align-items:center;gap:16px;padding:14px 22px;border-bottom:1px solid var(--line)}
+header h1{font-size:17px;margin:0;font-weight:600}.pill{padding:3px 10px;border-radius:999px;font-size:12px;background:#1f2330;color:var(--mut)}
+.pill.ok{background:rgba(33,195,122,.15);color:var(--g)}.pill.bad{background:rgba(255,84,112,.15);color:var(--r)}.pill.warn{background:rgba(245,185,66,.15);color:var(--y)}
+main{display:grid;grid-template-columns:2fr 1fr;gap:16px;padding:16px 22px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.card h2{font-size:13px;color:var(--mut);margin:0 0 10px;font-weight:500;text-transform:uppercase;letter-spacing:.05em}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.kpi .v{font-size:22px;font-weight:600}.kpi .l{color:var(--mut);font-size:12px}
+table{width:100%;border-collapse:collapse;font-size:13px}td,th{padding:6px 4px;border-bottom:1px solid var(--line);text-align:left}th{color:var(--mut);font-weight:500}
+.g{color:var(--g)}.r{color:var(--r)}.y{color:var(--y)}.m{color:var(--mut)}
+.tabs button{background:#1f2330;color:var(--fg);border:0;border-radius:8px;padding:6px 12px;margin-right:6px;cursor:pointer}.tabs button.on{background:var(--acc)}
+.scroll{max-height:320px;overflow:auto}.full{grid-column:1/-1}.lw{width:100%;position:relative}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--mut);margin:8px 0}.legend i{display:inline-block;width:14px;height:3px;margin-right:5px;vertical-align:middle}
+select{background:#1f2330;color:var(--fg);border:0;border-radius:8px;padding:6px 10px}
+footer{padding:10px 22px 18px;color:var(--mut);font-size:12px}footer a{color:var(--acc)}
+</style></head><body>
+<header><h1>Grok_Quant_Alpha</h1><span class="pill" id="src">…</span><span class="pill" id="mode">…</span><span class="pill" id="cb">…</span>
+<span class="pill warn">SÓ LEITURA · nenhuma ordem é enviada</span><span class="m" id="upd" style="margin-left:auto"></span></header>
+<main>
+<section class="card full"><div class="kpis">
+<div class="kpi"><div class="l">Equity</div><div class="v" id="k-eq">–</div></div>
+<div class="kpi"><div class="l">Drawdown atual / máx.</div><div class="v" id="k-dd">–</div></div>
+<div class="kpi"><div class="l">Limites DD (reduzir / suspender)</div><div class="v" id="k-lim">–</div></div>
+<div class="kpi"><div class="l">Último ciclo</div><div class="v" id="k-cyc">–</div></div></div></section>
+<section class="card"><h2>Preço · entradas, saídas e stops</h2>
+<div class="tabs" id="tabs"></div><div id="px" class="lw" style="height:340px"></div></section>
+<section class="card"><h2>Saldos / posições</h2><div class="scroll"><table id="bal"></table></div>
+<h2 style="margin-top:14px">Preços (mid)</h2><table id="prices"></table></section>
+<section class="card"><h2>Drawdown</h2><div id="dd" class="lw" style="height:220px"></div></section>
+<section class="card"><h2>Ordens paper / staged / ativas</h2><div class="scroll"><table id="ord"></table></div></section>
+<section class="card full"><h2>Decisões por ciclo (logs/audit.jsonl)</h2><div class="scroll"><table id="dec"></table></div></section>
+<section class="card full" id="desk"><h2>Desk (alertas apenas · DESK_RULES.md)</h2>
+<div class="kpis" id="desk-kpis"></div>
+<div style="display:flex;gap:10px;align-items:center;margin-top:14px"><h2 style="margin:0">Gráfico do desk · zonas FVG, entradas, stops, TP e saídas</h2>
+<select id="d-coin"></select><div class="tabs" id="d-tf"><button data-tf="240" class="on">4H</button><button data-tf="60">1H</button><button data-tf="1440">1D</button></div>
+<span class="m" id="d-src"></span></div>
+<div id="d-chart" class="lw" style="height:420px;margin-top:8px"></div>
+<div class="legend"><span><i style="background:#21c37a"></i>zona FVG activa/confirmada</span><span><i style="background:#f5b942"></i>zona testada</span><span><i style="background:#5b6275"></i>zona usada/expirada/inválida</span>
+<span><i style="background:#4ea1ff"></i>entrada</span><span><i style="background:#ff5470"></i>stop</span><span><i style="background:#21c37a;height:2px"></i>TP</span><span>▲ entrada · ▼ saída (desk) · ◆ replay histórico</span></div>
+<h2 style="margin-top:14px">Curva de equity · paper (journal) e replay histórico</h2><div id="d-eq" class="lw" style="height:240px"></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px">
+<div><h2>Watchlist</h2><div class="scroll"><table id="d-watch"></table></div></div>
+<div><h2>Zonas ativas</h2><div class="scroll"><table id="d-zones"></table></div></div>
+<div><h2>Outbox (alertas)</h2><div class="scroll"><table id="d-outbox"></table></div></div>
+<div><h2>Posições abertas (paper/TAKEN)</h2><div class="scroll"><table id="d-pos"></table></div>
+<h2 style="margin-top:12px">Journal</h2><div class="scroll"><table id="d-journal"></table></div></div>
+</div></section>
+</main><footer>Só leitura: nenhuma ordem é enviada. Gráficos: <a href="https://www.tradingview.com/" target="_blank" rel="noopener">TradingView Lightweight Charts™</a> ·
+Copyright (с) 2025 TradingView, Inc. · Apache-2.0 (<a href="/vendor/NOTICE-lightweight-charts.txt">NOTICE</a> · <a href="/vendor/LICENSE-lightweight-charts.txt">LICENSE</a>)</footer>
+<script src="/app.js"></script></body></html>

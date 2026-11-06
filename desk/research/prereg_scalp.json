@@ -1,0 +1,186 @@
+{
+ "note": "escrito ANTES de correr qualquer variante nos dados reais; run recusa se o hash n\u00e3o bater ou o c\u00f3digo divergir",
+ "data": {
+  "src": "data_ext/binance_vision/1m (data.binance.vision 1m, USDT como proxy de USD na Revolut X)",
+  "symbols": [
+   "BTC",
+   "ETH",
+   "SOL",
+   "XRP",
+   "DOGE",
+   "ADA"
+  ],
+  "tf_min": [
+   1,
+   5
+  ],
+  "bad_bar_rule": "barra em falta/inv\u00e1lida \u2192 preenchida com o fecho anterior e bloqueia entradas 30 barras"
+ },
+ "windows": {
+  "dev": [
+   1727740800000,
+   1769904000000
+  ],
+  "train": [
+   1727740800000,
+   1765670400000
+  ],
+  "validation": [
+   1765670400000,
+   1769904000000
+  ],
+  "holdout": [
+   1769904000000,
+   1790812800000
+  ],
+  "walk_forward": "90d treino \u2192 30d teste, passo 30d, min 30 trades"
+ },
+ "execution": {
+  "signal": "fecho da barra t",
+  "taker_entry": "abertura t+1 + slippage",
+  "maker_entry": "limite = fecho t, v\u00e1lida 3 barras, enche s\u00f3 se low < limite",
+  "stop": "sempre taker; abertura abaixo do stop \u2192 abertura; stop e alvo na mesma barra \u2192 stop",
+  "target_maker": "limite, enche s\u00f3 se high > alvo",
+  "time_stop": "fecho com barras >= tstop \u2192 abertura seguinte taker",
+  "one_position_per_pair": true,
+  "atr_table": [
+   [
+    0.0015,
+    1.0,
+    1.5
+   ],
+   [
+    0.0035,
+    1.5,
+    2.0
+   ],
+   [
+    "inf",
+    2.0,
+    3.0
+   ]
+  ],
+  "S1_target": "banda do meio (da barra anterior)",
+  "S2_invalidation": "fecho < EMA21",
+  "S3_squeeze": "BB(20,2) largura <= percentil em alguma das 5 barras anteriores (janela 240), fecho > m\u00e1x 20 barras, vol > k\u00d7m\u00e9dia 20, largura a subir"
+ },
+ "costs": {
+  "taker_fee": 0.0009,
+  "maker_fee": 0.0,
+  "slippage": 0.0002,
+  "slippage_stress": 0.0004
+ },
+ "sizing": {
+  "risk": 0.01,
+  "pos_cap": 0.25,
+  "max_open": 4,
+  "start_usd": 65.0,
+  "day_halt": 0.03,
+  "peak_breaker": 0.05
+ },
+ "variants": [
+  "S1_bb_rsi_reversao:tf=1,bb=2.0/rsi20,tstop=5,exec=taker",
+  "S1_bb_rsi_reversao:tf=1,bb=2.0/rsi20,tstop=5,exec=maker",
+  "S1_bb_rsi_reversao:tf=1,bb=2.0/rsi20,tstop=15,exec=taker",
+  "S1_bb_rsi_reversao:tf=1,bb=2.0/rsi20,tstop=15,exec=maker",
+  "S1_bb_rsi_reversao:tf=1,bb=2.0/rsi25,tstop=5,exec=taker",
+  "S1_bb_rsi_reversao:tf=1,bb=2.0/rsi25,tstop=5,exec=maker",
+  "S1_bb_rsi_reversao:tf=1,bb=2.0/rsi25,tstop=15,exec=taker",
+  "S1_bb_rsi_reversao:tf=1,bb=2.0/rsi25,tstop=15,exec=maker",
+  "S1_bb_rsi_reversao:tf=1,bb=2.5/rsi20,tstop=5,exec=taker",
+  "S1_bb_rsi_reversao:tf=1,bb=2.5/rsi20,tstop=5,exec=maker",
+  "S1_bb_rsi_reversao:tf=1,bb=2.5/rsi20,tstop=15,exec=taker",
+  "S1_bb_rsi_reversao:tf=1,bb=2.5/rsi20,tstop=15,exec=maker",
+  "S1_bb_rsi_reversao:tf=1,bb=2.5/rsi25,tstop=5,exec=taker",
+  "S1_bb_rsi_reversao:tf=1,bb=2.5/rsi25,tstop=5,exec=maker",
+  "S1_bb_rsi_reversao:tf=1,bb=2.5/rsi25,tstop=15,exec=taker",
+  "S1_bb_rsi_reversao:tf=1,bb=2.5/rsi25,tstop=15,exec=maker",
+  "S1_bb_rsi_reversao:tf=1,bb=3.0/puro,tstop=5,exec=taker",
+  "S1_bb_rsi_reversao:tf=1,bb=3.0/puro,tstop=5,exec=maker",
+  "S1_bb_rsi_reversao:tf=1,bb=3.0/puro,tstop=15,exec=taker",
+  "S1_bb_rsi_reversao:tf=1,bb=3.0/puro,tstop=15,exec=maker",
+  "S1_bb_rsi_reversao:tf=5,bb=2.0/rsi20,tstop=5,exec=taker",
+  "S1_bb_rsi_reversao:tf=5,bb=2.0/rsi20,tstop=5,exec=maker",
+  "S1_bb_rsi_reversao:tf=5,bb=2.0/rsi20,tstop=15,exec=taker",
+  "S1_bb_rsi_reversao:tf=5,bb=2.0/rsi20,tstop=15,exec=maker",
+  "S1_bb_rsi_reversao:tf=5,bb=2.0/rsi25,tstop=5,exec=taker",
+  "S1_bb_rsi_reversao:tf=5,bb=2.0/rsi25,tstop=5,exec=maker",
+  "S1_bb_rsi_reversao:tf=5,bb=2.0/rsi25,tstop=15,exec=taker",
+  "S1_bb_rsi_reversao:tf=5,bb=2.0/rsi25,tstop=15,exec=maker",
+  "S1_bb_rsi_reversao:tf=5,bb=2.5/rsi20,tstop=5,exec=taker",
+  "S1_bb_rsi_reversao:tf=5,bb=2.5/rsi20,tstop=5,exec=maker",
+  "S1_bb_rsi_reversao:tf=5,bb=2.5/rsi20,tstop=15,exec=taker",
+  "S1_bb_rsi_reversao:tf=5,bb=2.5/rsi20,tstop=15,exec=maker",
+  "S1_bb_rsi_reversao:tf=5,bb=2.5/rsi25,tstop=5,exec=taker",
+  "S1_bb_rsi_reversao:tf=5,bb=2.5/rsi25,tstop=5,exec=maker",
+  "S1_bb_rsi_reversao:tf=5,bb=2.5/rsi25,tstop=15,exec=taker",
+  "S1_bb_rsi_reversao:tf=5,bb=2.5/rsi25,tstop=15,exec=maker",
+  "S1_bb_rsi_reversao:tf=5,bb=3.0/puro,tstop=5,exec=taker",
+  "S1_bb_rsi_reversao:tf=5,bb=3.0/puro,tstop=5,exec=maker",
+  "S1_bb_rsi_reversao:tf=5,bb=3.0/puro,tstop=15,exec=taker",
+  "S1_bb_rsi_reversao:tf=5,bb=3.0/puro,tstop=15,exec=maker",
+  "S2_ema9_21_recuo:tf=1,exit=atr_tp,tstop=15,exec=taker",
+  "S2_ema9_21_recuo:tf=1,exit=atr_tp,tstop=15,exec=maker",
+  "S2_ema9_21_recuo:tf=1,exit=atr_tp,tstop=45,exec=taker",
+  "S2_ema9_21_recuo:tf=1,exit=atr_tp,tstop=45,exec=maker",
+  "S2_ema9_21_recuo:tf=1,exit=ema_only,tstop=15,exec=taker",
+  "S2_ema9_21_recuo:tf=1,exit=ema_only,tstop=15,exec=maker",
+  "S2_ema9_21_recuo:tf=1,exit=ema_only,tstop=45,exec=taker",
+  "S2_ema9_21_recuo:tf=1,exit=ema_only,tstop=45,exec=maker",
+  "S2_ema9_21_recuo:tf=5,exit=atr_tp,tstop=15,exec=taker",
+  "S2_ema9_21_recuo:tf=5,exit=atr_tp,tstop=15,exec=maker",
+  "S2_ema9_21_recuo:tf=5,exit=atr_tp,tstop=45,exec=taker",
+  "S2_ema9_21_recuo:tf=5,exit=atr_tp,tstop=45,exec=maker",
+  "S2_ema9_21_recuo:tf=5,exit=ema_only,tstop=15,exec=taker",
+  "S2_ema9_21_recuo:tf=5,exit=ema_only,tstop=15,exec=maker",
+  "S2_ema9_21_recuo:tf=5,exit=ema_only,tstop=45,exec=taker",
+  "S2_ema9_21_recuo:tf=5,exit=ema_only,tstop=45,exec=maker",
+  "S3_squeeze_volume:tf=1,pct=10,kvol=1.5,tstop=15,exec=taker",
+  "S3_squeeze_volume:tf=1,pct=10,kvol=1.5,tstop=15,exec=maker",
+  "S3_squeeze_volume:tf=1,pct=10,kvol=1.5,tstop=45,exec=taker",
+  "S3_squeeze_volume:tf=1,pct=10,kvol=1.5,tstop=45,exec=maker",
+  "S3_squeeze_volume:tf=1,pct=10,kvol=2.5,tstop=15,exec=taker",
+  "S3_squeeze_volume:tf=1,pct=10,kvol=2.5,tstop=15,exec=maker",
+  "S3_squeeze_volume:tf=1,pct=10,kvol=2.5,tstop=45,exec=taker",
+  "S3_squeeze_volume:tf=1,pct=10,kvol=2.5,tstop=45,exec=maker",
+  "S3_squeeze_volume:tf=1,pct=20,kvol=1.5,tstop=15,exec=taker",
+  "S3_squeeze_volume:tf=1,pct=20,kvol=1.5,tstop=15,exec=maker",
+  "S3_squeeze_volume:tf=1,pct=20,kvol=1.5,tstop=45,exec=taker",
+  "S3_squeeze_volume:tf=1,pct=20,kvol=1.5,tstop=45,exec=maker",
+  "S3_squeeze_volume:tf=1,pct=20,kvol=2.5,tstop=15,exec=taker",
+  "S3_squeeze_volume:tf=1,pct=20,kvol=2.5,tstop=15,exec=maker",
+  "S3_squeeze_volume:tf=1,pct=20,kvol=2.5,tstop=45,exec=taker",
+  "S3_squeeze_volume:tf=1,pct=20,kvol=2.5,tstop=45,exec=maker",
+  "S3_squeeze_volume:tf=5,pct=10,kvol=1.5,tstop=15,exec=taker",
+  "S3_squeeze_volume:tf=5,pct=10,kvol=1.5,tstop=15,exec=maker",
+  "S3_squeeze_volume:tf=5,pct=10,kvol=1.5,tstop=45,exec=taker",
+  "S3_squeeze_volume:tf=5,pct=10,kvol=1.5,tstop=45,exec=maker",
+  "S3_squeeze_volume:tf=5,pct=10,kvol=2.5,tstop=15,exec=taker",
+  "S3_squeeze_volume:tf=5,pct=10,kvol=2.5,tstop=15,exec=maker",
+  "S3_squeeze_volume:tf=5,pct=10,kvol=2.5,tstop=45,exec=taker",
+  "S3_squeeze_volume:tf=5,pct=10,kvol=2.5,tstop=45,exec=maker",
+  "S3_squeeze_volume:tf=5,pct=20,kvol=1.5,tstop=15,exec=taker",
+  "S3_squeeze_volume:tf=5,pct=20,kvol=1.5,tstop=15,exec=maker",
+  "S3_squeeze_volume:tf=5,pct=20,kvol=1.5,tstop=45,exec=taker",
+  "S3_squeeze_volume:tf=5,pct=20,kvol=1.5,tstop=45,exec=maker",
+  "S3_squeeze_volume:tf=5,pct=20,kvol=2.5,tstop=15,exec=taker",
+  "S3_squeeze_volume:tf=5,pct=20,kvol=2.5,tstop=15,exec=maker",
+  "S3_squeeze_volume:tf=5,pct=20,kvol=2.5,tstop=45,exec=taker",
+  "S3_squeeze_volume:tf=5,pct=20,kvol=2.5,tstop=45,exec=maker"
+ ],
+ "n_variants": 88,
+ "prior_trials_project": 7335,
+ "selection": "TREINO 2024-10-01\u21922025-12-14 (90% do DEV): em cada (fam\u00edlia \u00d7 execu\u00e7\u00e3o taker/maker) o campe\u00e3o = maior R m\u00e9dio por trade (custos base) entre variantes com >= 300 trades de treino (sen\u00e3o: a com mais trades). 6 campe\u00f5es. Valida\u00e7\u00e3o 2025-12-14\u21922026-02-01 (10% do DEV) = s\u00f3 porta V1, n\u00e3o re-selecciona. Holdout 2026-02-01\u21922026-10-01 avaliado UMA vez para os 6 campe\u00f5es. Holdout das outras variantes = s\u00f3 diagn\u00f3stico, calculado depois, n\u00e3o muda nada.",
+ "criteria": [
+  "V1 valida\u00e7\u00e3o: R m\u00e9dio do campe\u00e3o > 0",
+  "V2 holdout: R m\u00e9dio por trade > 0 com >= 100 trades (custos base)",
+  "V3 holdout: bootstrap estacion\u00e1rio (bloco 5 dias) da m\u00e9dia di\u00e1ria > 0, p Holm (6 campe\u00f5es) < 0.05",
+  "V4 DSR do campe\u00e3o (s\u00e9rie di\u00e1ria de treino) > 0.95 com N = variantes deste estudo + 7335 anteriores do projecto",
+  "V5 White Reality Check no treino (todas as variantes vs caixa, B=1000, bloco 5 dias) p < 0.05",
+  "V6 walk-forward 90d\u219230d dentro do DEV (mesma fam\u00edlia e execu\u00e7\u00e3o): R m\u00e9dio > 0",
+  "V7 holdout com slippage dobrada (4 bp): R m\u00e9dio > 0",
+  "V8 holdout: max drawdown da s\u00e9rie di\u00e1ria (sem travas da conta) <= 20%",
+  "VALIDADA = V1..V8 todas; qualquer falha = NAO_VALIDADA. S\u00f3 VALIDADA justifica um bot de scalping em paper."
+ ],
+ "sha256": "d2ee09adeb8e21f4b721c8a650a101e7ea53ba5c52cda8278a3855ef1ef38689"
+}

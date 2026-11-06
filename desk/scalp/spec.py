@@ -1,0 +1,100 @@
+"""Especificação CONGELADA dos bots Scalp (paper only) + pré-registo com SHA-256.
+O spec abaixo é escrito no ficheiro de pré-registo ANTES de qualquer replay/forward; `check()` recusa correr se o spec
+em código divergir do ficheiro ou se o hash não bater. Mudar QUALQUER parâmetro = novo id + novo pré-registo
+(nunca afinar com resultados do forward).
+"""
+from __future__ import annotations
+import hashlib, json, os, time
+
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+PREREG = os.path.join(ROOT, "desk", "research", "prereg_scalp_forward.json")
+
+SPEC = {
+    "id": "scalp_forward_v1",
+    "mode": "PAPER ONLY — nenhuma ordem real, nenhuma chave, nunca live",
+    "context": "desk/research/scalp.py (proxy Binance, pré-registado) deu NÃO VALIDADA às 3 famílias; isto é um teste forward "
+               "independente com preços reais da Revolut X, NÃO um atalho de validação.",
+    "symbols": ["BTC-USD", "ETH-USD", "SOL-USD"],
+    "data": {"source": "Revolut X GET /api/1.0/public/candles/{symbol}?interval=1 (público, sem chave, 1 req/s, janela ≤1000 velas)",
+             "tf5": "5m = agregação UTC das 1m (fronteiras :00,:05,...)",
+             "closed_rule": "vela 1m conta só quando now ≥ start + 60 s + 20 s de folga",
+             "missing_minute": "minuto ausente → O=H=L=C=fecho anterior, v=0 (sintética)",
+             "close_grace_s": 20},
+    "indicators": {"bb_n": 20, "bb_k": 2.0, "rsi_n": 14, "atr_n": 14, "ema_fast": 9, "ema_slow": 21, "adx_n": 14,
+                   "range_n": 15, "vol_n": 20, "warmup_bars": 60},
+    "bots": {
+        "bb_rsi": {"name": "Scalp-BB-RSI 1m", "tf": 1, "entry": "close < bb_lo(20,2) e RSI14 < 25", "rsi_max": 25.0,
+                   "tp": "max(bb_mid, L×(1+1,5d))", "short_signal_exit": "close > bb_hi e RSI14 > 75 → sai do long (senão HOLD)",
+                   "rsi_short": 75.0, "time_stop_bars": 30, "regime": "ADX14 < 20"},
+        "ema_pb": {"name": "Scalp-EMA-Pullback 5m", "tf": 5,
+                   "entry": "EMA9 > EMA21; low ≤ EMA9; close > EMA9 e > EMA21; pavio inferior ≥ 50% da amplitude (>0)",
+                   "wick_min": 0.5, "tp": "L×(1+1,5d)", "short_signal_exit": "close < EMA21 ou EMA9 < EMA21 → sai do long",
+                   "time_stop_bars": 12, "regime": "ADX14 > 25"},
+        "brk": {"name": "Scalp-Range-Breakout 1m", "tf": 1,
+                "entry": "amplitude das 15 velas anteriores < 0,5%; close > máx dessas 15; volume > 1,5× média das 20 anteriores e > 0",
+                "range_max": 0.005, "vol_mult": 1.5, "tp": "L×(1+1,5d)", "short_signal_exit": "close < mín das 15 velas anteriores → sai do long",
+                "time_stop_bars": 30, "regime": "ADX14 > 25"},
+    },
+    "regime": {"adx_mr_max": 20.0, "adx_trend_min": 25.0,
+               "books": "cada bot corre em 2 livros separados: <bot> (sem filtro) e <bot>_adx (com filtro de regime); 6 livros, 6 ensaios, "
+                        "cada um avaliado à parte (sem escolher o melhor a posteriori)"},
+    "execution": {"entry": "limite post-only (maker) ao fecho da vela do sinal; válida 3 velas do timeframe do bot; enche só se uma vela 1m "
+                           "seguinte tiver low < limite (ATRAVESSAR, tocar não basta); preço = limite; taxa 0; não cheias contadas",
+                  "entry_valid_bars": 3, "market_entries": "nenhuma (sem entradas a mercado nesta spec)",
+                  "tp_exit": "limite (maker) de venda; enche só se high > alvo; taxa 0; nunca na vela do enchimento da entrada",
+                  "stop_exit": "taker: low ≤ stop → sai a min(stop, open) × (1 − slippage − meio-spread), taxa 0,09%",
+                  "same_bar": "stop e alvo na mesma vela → stop; entrada e stop na mesma vela → stop",
+                  "other_exits": "sinal curto / invalidação / tempo / kill → taker ao fecho × (1 − slippage − meio-spread), taxa 0,09%",
+                  "taker_fee": 0.0009, "maker_fee": 0.0, "slippage": 0.0010,
+                  "half_spread": "forward: metade do spread do order book público da Revolut X (amostra ≤120 s); senão valor do replay",
+                  "replay_half_spread": {"BTC-USD": 0.00008, "ETH-USD": 0.00010, "SOL-USD": 0.00019},
+                  "replay_half_spread_src": "mediana/2 de 199 amostras do order book Revolut X em data_tape/orderbook_samples.jsonl",
+                  "book_max_age_s": 120},
+    "risk": {"risk_pct": 0.005, "stop": "d = min(0.004, 1.5 × ATR14(tf) / close)  (o MAIS APERTADO)", "stop_fixed": 0.004, "stop_atr_mult": 1.5,
+             "rr_min": 1.5, "cost_rt": "taker_fee + slippage + 2 × meio-spread (pior caso: entrada maker + saída taker)",
+             "reject_if": "alvo% ≤ cost_rt  (ou d = 0)",
+             "R_unit": "qty × (L − stop) + qty × stop × (taker + slippage + meio-spread)  = perda se parar exactamente no stop",
+             "pos_cap_frac": 0.2, "pos_cap_note": "notional ≤ 20% da equity (5 posições cabem em 100%, sem alavancagem) e ≤ caixa livre",
+             "max_open": 5, "one_per_symbol": True, "start_equity": 65.0,
+             "daily_kill": 0.02, "daily_kill_rule": "equity marcada ao fecho ≤ 98% da equity de abertura do dia UTC → fecha tudo (taker), "
+                                                    "cancela pendentes, parado até ao dia UTC seguinte",
+             "dd_kill": 0.20, "dd_kill_rule": "queda > 20% do pico (marcada) → livro KILL trancado (fecha tudo)",
+             "ceiling": 1000.0, "ceiling_rule": "equity ≥ $1.000 → pausa trancada (fecha tudo); retoma só com rebase manual para $65"},
+    "auditor": {"min_trades": 40, "win_rate": 0.33, "expectancy_r": 0.4, "max_dd": 0.20,
+                "verdict": "trades<40 → 'dados insuficientes' (ou NO-GO se DD>20%); todos OK → 'possível GO (só paper)'; senão NO-GO"},
+    "streams": {"REPLAY": "histórico 1m mais recente disponível na Revolut X na hora do replay; primeiro dia só aquece indicadores; "
+                          "rotulado REPLAY, estado separado, nunca somado ao FORWARD",
+                "FORWARD": "velas fechadas depois do arranque; aquece com ≤1000 velas 1m anteriores; só conta trades com sinal ≥ arranque; "
+                           "após reinício recupera as velas em falta (marcadas catchup)"},
+    "no_tuning": "parâmetros congelados; resultados do forward nunca são usados para os mudar",
+}
+
+
+def canon(obj) -> str: return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+
+
+def spec_hash(spec=None) -> str: return hashlib.sha256(canon(SPEC if spec is None else spec).encode()).hexdigest()
+
+
+def code_hash() -> str:
+    h = hashlib.sha256(); d = os.path.dirname(os.path.abspath(__file__))
+    for f in ("ind.py", "engine.py", "spec.py"):
+        h.update(open(os.path.join(d, f), "rb").read())
+    return h.hexdigest()
+
+
+def freeze(path=PREREG, force=False) -> dict:
+    if os.path.exists(path) and not force: raise RuntimeError("pré-registo já existe; não reescrevo (mudança = novo id)")
+    doc = {"note": "escrito ANTES de correr o replay ou o forward; o runner recusa se o spec ou o hash divergirem",
+           "frozen_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "spec": SPEC, "sha256": spec_hash(),
+           "code_sha256_at_freeze": code_hash()}
+    with open(path, "w") as f: json.dump(doc, f, indent=1, ensure_ascii=False)
+    return doc
+
+
+def check(path=PREREG) -> str:
+    if not os.path.exists(path): raise RuntimeError("sem pré-registo: corre `python -m desk.scalp prereg` primeiro")
+    doc = json.load(open(path))
+    if doc.get("sha256") != spec_hash(doc.get("spec")) or doc["sha256"] != spec_hash():
+        raise RuntimeError("spec diverge do pré-registo congelado — recuso correr (mudança exige novo id/pré-registo)")
+    return doc["sha256"]
